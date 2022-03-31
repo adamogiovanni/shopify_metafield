@@ -43,7 +43,9 @@
           , product_image_url : "https:{{product.featured_image.src | img_url : 'master'}}" ,
           "custom": {
                         "merchandiser": "{{ variant.metafields.andes_pim.product_replenishment_time.value }}",
-                         "replenishment_duration": "{{my_fields.insider_replenishment_duration}}"
+                         "replenishment_duration": {{ variant.metafields.my_fields.replenishmentduration.value }},
+                          "duration" : "{{ variant.metafields.my_fields.replenishmentduration.value }}"
+                          
                     }
          }, 
         quantity : "{{item.quantity}}"
