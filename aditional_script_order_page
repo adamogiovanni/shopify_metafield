@@ -40,9 +40,10 @@
           {% endif %}
           , unit_sale_price : {{product.price | money_without_currency | replace: ',', '' }}
           , url : "{{shop.secure_url}}{{product.url}}"
-          , product_image_url : "https:{{product.featured_image.src | img_url : 'master'}}" 
-          , "custom": {
-                        "replenish_duration": {{ variant.metafields.andes_pim.product_replenishment_time.value }}
+          , product_image_url : "https:{{product.featured_image.src | img_url : 'master'}}" ,
+          "custom": {
+                        "merchandiser": "{{ variant.metafields.andes_pim.product_replenishment_time.value }}",
+                         "replenishment_duration": "30"
                     }
          }, 
         quantity : "{{item.quantity}}"
