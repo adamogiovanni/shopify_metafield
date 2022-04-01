@@ -72,8 +72,10 @@ window.insider_object = {
       					{% endfor %}
                         "product_image_url": "{{ line_item.image | img_url }}",
                         "custom": {
-      						"merchandiser": "{{ line_item.vendor }}"
-                        }
+      				  "merchandiser": "{{ line_item.vendor }}",
+                                  "duration": "{{line_item.variant.metafields.my_fields.duration}}",
+                                   "duration2": "{{line_item.variant.metafields.global.product_replenishment_time}}"
+                                 }
                     },
                     "quantity": {{ line_item.quantity }},
                     "subtotal": {{ line_item.original_line_price | divided_by: 100}},
