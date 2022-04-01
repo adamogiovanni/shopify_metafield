@@ -1,0 +1,88 @@
+{% for transaction in order.transactions %}
+{% if order.financial_status == 'paid' %}
+<script>
+window.insider_object = {
+    "transaction": {
+       "order_id": "{{ order.id }}",
+      {% assign order_total = transaction.amount  %}
+        "currency": "CLP",
+        "total": {{ order_total | divided_by: 100 }},
+        "payment_type": "{{ transaction.kind }}",
+        "bank_name": "{{ transaction.gateway }}",
+      	"shipping_cost": {{ order.shipping_price | divided_by: 100 }},
+{% for address in order.shipping_address %}
+        "delivery": {
+            "country": "{{ address.country }}",
+            "city": "{{ address.city }}",
+            "district": "{{ address.province }}"
+        },
+{% endfor %}
+"delivery": {
+            "country": "{{ checkout.shipping_address.country }}",
+            "city": "{{ checkout.shipping_address.city }}",
+            "district": "{{ checkout.shipping_address.province }}"
+        },
+        "vouchers": [
+      		{% assign total_discount_vouchers_money = 0 %}
+      		
+            {% for discount_application in order.discount_applications %}
+      			{% if discount_application.type == "discount_code" %}
+              		"{{ discount_application.title }}",
+              		{% assign total_discount_vouchers_money = total_discount_vouchers_money + discount_application.total_allocated_amount %}
+      			{% endif %}
+            {% endfor %}
+        ],
+        "voucher_discount": {{- total_discount_vouchers_money -}},
+      	"voucher_discount_ratio": {{ total_discount_vouchers_money | divided_by: order_total | times: 100 }},
+        "promotions": [
+            {% assign total_discount_promotions_money = 0 %}
+      		
+            {% for discount_application in order.discount_applications %}
+      			{% if discount_application.type == "automatic" %}
+              		"{{ discount_application.title }}",
+              		{% assign total_discount_promotions_money = total_discount_promotions_money + discount_application.total_allocated_amount %}
+      			{% endif %}
+            {% endfor %}
+        ],
+        "promotion_discount": {{- total_discount_promotions_money -}},
+        "promotion_discount_ratio": {{ total_discount_promotions_money | divided_by: order_total | times: 100 }},
+        
+      
+        "line_items": [
+      		{%- for line_item in order.line_items -%}
+              {
+
+                    "product": {
+     				 	"id": "{{ line_item.product_id }}",
+                        "name": "{{ line_item.title }}",
+                        "taxonomy": [
+      						{% for product in line_item.product %}
+      							{% for tag in product.tags %}"{{ tag }}"{% unless forloop.last == true %} ,{% endunless %}{% endfor %}
+      						{% endfor %}
+                        ],
+                        "currency": "CLP",
+      					"unit_price": {{ line_item.original_price | divided_by: 100 }},
+      					"unit_sale_price": {{ line_item.final_price | divided_by: 100 }},
+                        "url": "{{ line_item.url }}",
+      					{% for variant in line_item.variant %}
+      						{% if variant.selected %}
+                              "stock": {{ variant.inventory_quantity }},
+                              "color": "{{ variant.title }}",
+      						{% endif %}
+      					{% endfor %}
+                        "product_image_url": "{{ line_item.image | img_url }}",
+                        "custom": {
+      						"merchandiser": "{{ line_item.vendor }}"
+                        }
+                    },
+                    "quantity": {{ line_item.quantity }},
+                    "subtotal": {{ line_item.original_line_price | divided_by: 100}},
+
+              }
+            {%- endfor -%}
+        ]
+    }
+}
+</script>
+{% endif %}
+{% endfor %} 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="{{ locale }}" dir="{{ direction }}" class="{{ checkout_html_classes }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, user-scalable=0">
+    <meta name="referrer" content="origin">
+
+    <title>{{ page_title }}</title>
+
+    {{ content_for_header }}
+
+    {{ checkout_stylesheets }}
+    {{ checkout_scripts }}
+    
+    <!-- Springs Digital Checkout -->
+	  {{ 'checkout.scss.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'sentry.min.js' | asset_url }}"></script>
+    <script src="{{ 'checkout.js' | asset_url }}"></script>
+    <!-- Springs Digital Checkout End -->
+    
+    <style>
+      #order-summary > div > div.order-summary__section--total-lines {
+      	border-top: none;
+      }
+      body > div.content > div > div.main > div.main__content > div.step > div > form > div.section.section--billing-address {
+      	display: none;
+      }
+      body.step-payment-method [data-rebuy-id] {
+        display:none;
+      }
+    </style>
+    
+    <script>
+      window.addEventListener('load', () => {
+        // Limitamos caracteres a la direccion 2                      
+      	const address2 = document.querySelector('#checkout_shipping_address_address2') 
+      	address2.setAttribute('maxlength', '30');
+        
+      	/*
+        // Creamos el mensaje para indicar de la limitacion.
+      	const message = document.createElement('small');
+       	message.setAttribute('data-message-for', 'address2');
+      	message.setAttribute('style', 'font-weight:600;')
+      	message.innerText = 'Máximo 30 caracteres';
+        address2.after(message)
+        */
+        
+      })
+    </script>
+    
+
+  {% include 'insider' with 'head' %}
+ </head>
+  <body>
+    {{ skip_to_content_link }}
+
+    <div class="banner" data-header>
+      <div class="wrap">
+        {{ content_for_logo }}
+      </div>
+    </div>
+
+    {{ order_summary_toggle }}
+
+    <div class="content" data-content>
+      <div class="wrap">
+        <div class="main" role="main">
+          <div class="main__header">
+            {{ content_for_logo }}
+            {{ breadcrumb }}
+            {{ alternative_payment_methods }}
+          </div>
+          <div class="main__content">
+            {{ content_for_layout }}
+          </div>
+          <div class="main__footer">
+            {{ content_for_footer }}
+          </div>
+        </div>
+        <div class="sidebar" role="complementary">
+          <div class="sidebar__header">
+            {{ content_for_logo }}
+          </div>
+          <div class="sidebar__content">
+            {{ content_for_order_summary }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{ tracking_code }}
+    
+    {%- include 'hotjar' -%}
+
+    {% comment %}
+    <div data-rebuy-id="1270"></div>
+    <script src="{{ 'rebuy-custom.js' | asset_url }}"></script>
+    <script src="https://rebuyengine.com/js/rebuy?shop=allnutrition-mv-temp1.myshopify.com"></script>
+    {% endcomment %}
+    
+    {% include 'insider' %} 
+ </body>
+</html>
