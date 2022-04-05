@@ -53,6 +53,9 @@
        }
         {% endfor %}   
     {% endcapture %}
+
+
+    
     window.insider_object = {
       version : "1.0"
       , page: {
