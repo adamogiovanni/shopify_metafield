@@ -1,2 +1,2 @@
 # shopify_metafield
-Integrate metafield in chopify checkout
+Integrate metafield in shopify checkout
